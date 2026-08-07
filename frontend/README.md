@@ -7,9 +7,10 @@ PWA estático responsável pela interface, instalação no Android/iOS e comunic
 1. Importe o repositório na Vercel.
 2. Em **Root Directory**, escolha `frontend`.
 3. Em **Framework Preset**, escolha `Other`.
-4. Não informe comando de build.
-5. Clique em **Deploy**.
+4. Cadastre as variáveis `PUBLIC_SUPABASE_URL` e `PUBLIC_SUPABASE_ANON_KEY`.
+5. O comando `npm run build` será executado automaticamente.
+6. Clique em **Deploy**.
 
-Antes da publicação, preencha `js/supabase-config.js` com a URL do projeto e a chave `anon/public`. Essa chave pode existir no navegador porque as tabelas são protegidas pelas políticas RLS de `backend/supabase.sql`.
+Para desenvolvimento local, copie os valores para `.env`. Na Vercel, use **Settings > Environment Variables**. O build gera `js/supabase-config.js` automaticamente. A chave `anon/public` pode existir no navegador porque as tabelas são protegidas pelas políticas RLS de `backend/supabase.sql`.
 
 Nunca coloque a chave `service_role` nesta pasta.

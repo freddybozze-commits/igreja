@@ -1,0 +1,10 @@
+{
+  "name": "iepp-curitiba-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/generate-config.js"
+  },
+  "engines": { "node": ">=20" }
+}

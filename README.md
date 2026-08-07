@@ -11,8 +11,10 @@ igreja/
 ## Ordem recomendada
 
 1. Configure o Supabase seguindo `backend/CONFIGURAR_SUPABASE.md`.
-2. Preencha `frontend/js/supabase-config.js` com a URL e a chave `anon/public`.
+2. Configure `PUBLIC_SUPABASE_URL` e `PUBLIC_SUPABASE_ANON_KEY` no projeto frontend da Vercel.
 3. Na Vercel, crie um projeto com **Root Directory** igual a `frontend`.
 4. Opcionalmente, crie outro projeto com **Root Directory** igual a `backend`.
 
 O frontend acessa diretamente o Supabase para cadastro, login, perfil, conteúdo e pedidos de oração. A segurança é aplicada pelas políticas RLS do banco; nenhuma chave administrativa fica no navegador.
+
+Cada pasta possui `.env.example`. Os arquivos `.env` reais ficam somente no computador e estão bloqueados pelo `.gitignore`.
