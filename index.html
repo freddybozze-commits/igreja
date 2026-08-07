@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#151515">
+  <meta name="description" content="PWA da Igreja Palavra Profética — IEPP Curitiba.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="IEPP Curitiba">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>IEPP Curitiba</title>
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <button class="icon-button" id="menuButton" aria-label="Abrir menu" title="Menu">
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+      <button class="brand" data-route="home" aria-label="Ir para início">
+        <img src="assets/images/logo.png" alt="Logo IEPP Curitiba">
+        <span><strong>IEPP Curitiba</strong><small>Palavra Profética</small></span>
+      </button>
+      <div class="topbar-actions">
+        <button id="installButton" class="icon-button install-button" aria-label="Instalar aplicativo" title="Instalar app" hidden>＋</button>
+        <button id="themeButton" class="icon-button" aria-label="Alternar tema" title="Alternar tema">◐</button>
+      </div>
+    </header>
+
+    <main id="mainContent" class="main-content" tabindex="-1" aria-live="polite">
+      <section class="loading-screen">
+        <img src="assets/images/logo.png" alt="" class="loading-logo">
+        <div class="loading-bar"><span></span></div>
+        <p>Carregando IEPP Curitiba…</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navegação principal">
+      <button data-route="posts" class="nav-item"><span>▷</span><small>Palavras</small></button>
+      <button data-route="agenda" class="nav-item"><span>▣</span><small>Agenda</small></button>
+      <button data-route="home" class="nav-item active"><span>⌂</span><small>Início</small></button>
+      <button data-route="prayer" class="nav-item"><span>♡</span><small>Oração</small></button>
+      <button data-route="profile" class="nav-item"><span>○</span><small>Perfil</small></button>
+    </nav>
+  </div>
+
+  <div id="drawerBackdrop" class="drawer-backdrop" hidden></div>
+  <aside id="drawer" class="drawer" aria-label="Menu lateral" aria-hidden="true">
+    <div class="drawer-header">
+      <img src="assets/images/logo.png" alt="Logo IEPP Curitiba">
+      <div><strong>IEPP Curitiba</strong><span>Igreja Palavra Profética</span></div>
+      <button id="drawerClose" class="icon-button" aria-label="Fechar menu">×</button>
+    </div>
+    <div class="drawer-links">
+      <button data-route="home">⌂ <span>Início</span></button>
+      <button data-route="posts">▤ <span>Palavras</span></button>
+      <button data-route="agenda">▣ <span>Agenda</span></button>
+      <button data-route="ministries">◎ <span>Ministérios</span></button>
+      <button data-route="bible">▥ <span>Bíblia</span></button>
+      <button data-route="prayer">♡ <span>Pedido de oração</span></button>
+      <button data-route="profile">○ <span>Perfil e contatos</span></button>
+    </div>
+    <div class="drawer-footer">
+      <span id="connectionStatus">● Online</span>
+      <small>PWA • Supabase</small>
+    </div>
+  </aside>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="detailDialog" class="detail-dialog"></dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+{
+  "church": {
+    "name": "Igreja Palavra Profética",
+    "handle": "@ieppcuritiba",
+    "city": "Curitiba - PR",
+    "category": "Organização religiosa",
+    "bio": [
+      "🔥 CONFERÊNCIA PROFÉTICA DA MULTIPLICAÇÃO",
+      "📅 11 a 23 de agosto",
+      "✨ Tempo de fé, milagres e multiplicação.",
+      "📲 Mais informações no WhatsApp 👇"
+    ],
+    "stats": {
+      "posts": "1.842",
+      "followers": "12,3 mil",
+      "following": "1.217"
+    },
+    "links": {
+      "linktree": "https://linktr.ee/palavraprofeticacwb",
+      "maps": "https://maps.app.goo.gl/27iFgZtBnQhDsPh58",
+      "whatsapp": "https://wa.me/5541998831797",
+      "instagram": "https://instagram.com/ieppcuritiba"
+    }
+  },
+  "hero": {
+    "eyebrow": "Programação especial",
+    "title": "Conferência Profética da Multiplicação",
+    "subtitle": "11 a 23 de agosto • Curitiba",
+    "image": "assets/images/banner_conferencia.jpg"
+  },
+  "highlights": [
+    {"title": "Batismo", "image": "assets/images/batismo.jpg"},
+    {"title": "Ministério Kids", "image": "assets/images/ministerio_kids.jpg"},
+    {"title": "Discipulado", "image": "assets/images/discipulado.jpg"},
+    {"title": "Nossos Cultos", "image": "assets/images/culto_familia.jpg"},
+    {"title": "Ao Vivo", "image": "assets/images/ao_vivo.jpg"}
+  ],
+  "posts": [
+    {
+      "id": "conference-2026",
+      "title": "Conferência Profética da Multiplicação",
+      "subtitle": "Uma programação especial de fé, milagres e multiplicação.",
+      "category": "Em destaque",
+      "date": "11 a 23 AGO",
+      "image": "assets/images/banner_conferencia.jpg",
+      "published": true
+    },
+    {
+      "id": "family-service",
+      "title": "Culto da Família",
+      "subtitle": "Uma noite de adoração, comunhão e Palavra.",
+      "category": "Cultos",
+      "date": "Domingo • 19h",
+      "image": "assets/images/culto_familia.jpg",
+      "published": true
+    },
+    {
+      "id": "prayer-service",
+      "title": "Culto de Oração",
+      "subtitle": "Tempo de oração, busca e fortalecimento da fé.",
+      "category": "Cultos",
+      "date": "Quarta-feira • 20h",
+      "image": "assets/images/culto_oracao.jpg",
+      "published": true
+    },
+    {
+      "id": "live",
+      "title": "Cultos Online",
+      "subtitle": "Acompanhe mensagens e transmissões da igreja.",
+      "category": "Ao vivo",
+      "date": "Transmissões",
+      "image": "assets/images/ao_vivo.jpg",
+      "published": true
+    }
+  ],
+  "events": [
+    {
+      "id": "conference-2026",
+      "title": "Conferência Profética da Multiplicação",
+      "date": "11–23 AGO",
+      "time": "Programação especial",
+      "location": "IEPP Curitiba",
+      "description": "Conferência especial com programação de 11 a 23 de agosto.",
+      "image": "assets/images/banner_conferencia.jpg",
+      "published": true
+    },
+    {
+      "id": "family-service",
+      "title": "Culto da Família",
+      "date": "DOMINGO",
+      "time": "19h",
+      "location": "IEPP Curitiba",
+      "description": "Encontro semanal para toda a família.",
+      "image": "assets/images/culto_familia.jpg",
+      "published": true
+    },
+    {
+      "id": "prayer-service",
+      "title": "Culto de Oração",
+      "date": "QUARTA",
+      "time": "20h",
+      "location": "IEPP Curitiba",
+      "description": "Uma noite dedicada à oração e comunhão.",
+      "image": "assets/images/culto_oracao.jpg",
+      "published": true
+    }
+  ],
+  "ministries": [
+    {"title": "Batismo", "description": "Preparação e acompanhamento para uma nova etapa de fé.", "image": "assets/images/batismo.jpg"},
+    {"title": "Ministério Kids", "description": "Ensino bíblico, cuidado e atividades para as crianças.", "image": "assets/images/ministerio_kids.jpg"},
+    {"title": "Discipulado", "description": "Crescimento, comunhão e serviço no Reino.", "image": "assets/images/discipulado.jpg"},
+    {"title": "Nossos Cultos", "description": "Programação semanal e encontros especiais.", "image": "assets/images/culto_familia.jpg"}
+  ],
+  "verses": [
+    {"reference": "João 3:16", "text": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito."},
+    {"reference": "Salmos 23:1", "text": "O Senhor é o meu pastor; nada me faltará."},
+    {"reference": "Filipenses 4:13", "text": "Tudo posso naquele que me fortalece."}
+  ]
+}
