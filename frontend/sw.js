@@ -57,7 +57,6 @@ self.addEventListener('fetch', (event) => {
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request).catch(() => {
-        if (url.pathname.endsWith('/admin.html')) return caches.match('./admin.html');
         return caches.match('./index.html');
       })
     );
