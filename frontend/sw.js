@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iepp-pwa-v4.0.0';
+const CACHE_NAME = 'iepp-pwa-v5.0.0';
 const APP_SHELL = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const APP_SHELL = [
   './js/supabase-service.js',
   './data/content.json',
   './assets/images/logo.png',
+  './assets/images/app_icon.png',
   './assets/images/banner_conferencia.jpg',
   './assets/images/culto_familia.jpg',
   './assets/images/culto_oracao.jpg',
