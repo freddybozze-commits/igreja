@@ -51,6 +51,9 @@ function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem('iepp-theme', theme);
   themeButton.textContent = theme === 'dark' ? '☀' : '◐';
+  themeButton.setAttribute('aria-label', theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro');
+  themeButton.title = theme === 'dark' ? 'Clarear site' : 'Escurecer site';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#151515' : '#f5f1e8');
 }
 
 function initTheme() {
