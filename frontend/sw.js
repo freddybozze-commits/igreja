@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iepp-pwa-v5.0.0';
+const CACHE_NAME = 'iepp-pwa-v6.0.0';
 const APP_SHELL = [
   './',
   './index.html',
