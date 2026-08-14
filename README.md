@@ -18,4 +18,3 @@ igreja/
 O frontend acessa diretamente o Supabase para cadastro, login, perfil, conteúdo e pedidos de oração. A segurança é aplicada pelas políticas RLS do banco; nenhuma chave administrativa fica no navegador.
 
 Cada pasta possui `.env.example`. Os arquivos `.env` reais ficam somente no computador e estão bloqueados pelo `.gitignore`.
-....
