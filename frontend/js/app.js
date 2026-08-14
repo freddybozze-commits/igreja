@@ -303,7 +303,7 @@ function renderProfile() {
   main.innerHTML = `
     ${pageHead('Meu perfil', 'Seus dados de membro da IEPP Curitiba.')}
     <section class="member-card">
-      <div class="member-avatar">${e((meta.full_name || state.user.email || 'M').charAt(0).toUpperCase())}</div>
+      <img class="member-avatar" src="assets/images/profile.png" alt="Igreja Evangélica Palavra Profética">
       <div><span class="member-label">MEMBRO</span><h2>${e(meta.full_name || 'Complete seu perfil')}</h2><p>${e(state.user.email)}</p></div>
     </section>
     <section class="form-card section">
