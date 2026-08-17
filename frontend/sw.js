@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iepp-pwa-v14.0.0';
+const CACHE_NAME = 'iepp-pwa-v15.0.0';
 const APP_SHELL = [
   './',
   './index.html',
@@ -48,7 +48,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (url.pathname.endsWith('/data/content.json')) {
+  if (url.pathname.endsWith('/data/content.json') || url.pathname.endsWith('/js/supabase-config.js')) {
     event.respondWith(
       fetch(request)
         .then((response) => {
