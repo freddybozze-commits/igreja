@@ -8,7 +8,7 @@ const APP_SHELL = [
   './js/supabase-config.js',
   './js/supabase-service.js',
   './data/content.json',
-  './assets/images/logo.png',
+  './assets/images/logo igreja.png',
   './assets/images/app_icon.png',
   './assets/images/banner_conferencia.jpg',
   './assets/images/culto_familia.jpg',

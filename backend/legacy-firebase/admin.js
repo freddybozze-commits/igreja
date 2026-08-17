@@ -87,7 +87,7 @@ function documentTable(type, items) {
         <tbody>
           ${items.length ? items.map((item) => `
             <tr>
-              <td><img src="${e(item.image || 'assets/images/logo.png')}" alt=""></td>
+              <td><img src="${e(item.image || 'assets/images/logo igreja.png')}" alt=""></td>
               <td><strong>${e(item.title || 'Sem título')}</strong><br><small>${e((item.subtitle || item.description || '').slice(0, 90))}</small></td>
               <td>${isPost ? e(item.category || '—') : `${e(item.date || '—')}<br><small>${e(item.time || '')}</small>`}</td>
               <td>${item.published === false ? 'Não' : 'Sim'}</td>
@@ -122,7 +122,7 @@ function editorView(type, item = {}) {
         <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" name="published" ${item.published === false ? '' : 'checked'}> Publicado</label>
         <div class="admin-toolbar"><button class="btn orange" type="submit">Salvar</button><button class="btn light" type="button" data-admin-cancel="${type}">Cancelar</button></div>
       </form>
-      <aside class="admin-preview"><img id="previewImage" src="${e(item.image || 'assets/images/logo.png')}" alt=""><h3 id="previewTitle">${e(item.title || 'Prévia do conteúdo')}</h3><p id="previewText">${e(subtitle || 'A descrição aparecerá aqui.')}</p></aside>
+      <aside class="admin-preview"><img id="previewImage" src="${e(item.image || 'assets/images/logo igreja.png')}" alt=""><h3 id="previewTitle">${e(item.title || 'Prévia do conteúdo')}</h3><p id="previewText">${e(subtitle || 'A descrição aparecerá aqui.')}</p></aside>
     </div>`;
 }
 

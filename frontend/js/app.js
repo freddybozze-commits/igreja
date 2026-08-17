@@ -34,9 +34,9 @@ function safeUrl(value = '') {
   if (raw.startsWith('assets/') || raw.startsWith('./assets/')) return raw;
   try {
     const url = new URL(raw, window.location.href);
-    return ['http:', 'https:'].includes(url.protocol) ? url.href : 'assets/images/logo.png';
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : 'assets/images/logo igreja.png';
   } catch {
-    return 'assets/images/logo.png';
+    return 'assets/images/logo igreja.png';
   }
 }
 
@@ -109,7 +109,7 @@ function sectionHead(title, action = '') {
 }
 
 function postCard(post) {
-  const image = safeUrl(post.image || 'assets/images/logo.png');
+  const image = safeUrl(post.image || 'assets/images/logo igreja.png');
   return `
     <article class="content-card" data-detail-type="post" data-detail-id="${e(post.id)}">
       <button class="media open-detail" aria-label="Abrir ${e(post.title)}">
@@ -284,7 +284,7 @@ function renderProfile() {
     main.innerHTML = `
       ${pageHead(registering ? 'Crie seu cadastro' : 'Bem-vindo', registering ? 'Faça parte da comunidade IEPP Curitiba.' : 'Entre para acessar seu perfil e acompanhar seus pedidos.')}
       <section class="auth-card">
-        <div class="auth-brand"><img src="assets/images/logo.png" alt=""><div><strong>Igreja Evangélica</strong><span>Palavra Profética</span></div></div>
+        <div class="auth-brand"><img src="assets/images/logo igreja.png" alt=""><div><strong>Igreja Evangélica</strong><span>Palavra Profética</span></div></div>
         <div class="auth-tabs">
           <button class="${!registering ? 'active' : ''}" data-auth-mode="login">Entrar</button>
           <button class="${registering ? 'active' : ''}" data-auth-mode="register">Cadastrar</button>
