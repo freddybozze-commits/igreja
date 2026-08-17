@@ -14,7 +14,16 @@
   <link rel="stylesheet" href="css/styles.css">
   <title>IEPP Curitiba</title>
 </head>
-<body>
+<body class="intro-active">
+  <div id="introScreen" class="intro-screen" role="dialog" aria-label="Vídeo de abertura">
+    <video id="introVideo" class="intro-video" autoplay muted playsinline preload="auto">
+      <source src="assets/videos/intro.mp4" type="video/mp4">
+    </video>
+    <div class="intro-controls">
+      <button id="introSound" class="intro-control" type="button" aria-label="Ativar som">Ativar som</button>
+      <button id="introSkip" class="intro-control" type="button">Pular intro</button>
+    </div>
+  </div>
   <div id="app" class="app-shell">
     <header class="topbar">
       <button class="icon-button" id="menuButton" aria-label="Abrir menu" title="Menu">

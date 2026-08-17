@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iepp-pwa-v11.0.0';
+const CACHE_NAME = 'iepp-pwa-v12.0.0';
 const APP_SHELL = [
   './',
   './index.html',
@@ -21,6 +21,7 @@ const APP_SHELL = [
   './assets/images/batismo.png',
   './assets/images/ministerio_kids.png',
   './assets/images/discipulado.png',
+  './assets/videos/intro.mp4',
   './assets/icons/icon-silver-192.png',
   './assets/icons/icon-silver-512.png',
   './assets/icons/maskable-silver-192.png',
