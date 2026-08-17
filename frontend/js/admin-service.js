@@ -65,7 +65,7 @@ export async function saveDocument(type, data, id = null) {
   const { data: saved, error } = await query;
   if (error) {
     if (/row-level security|policy/i.test(error.message || '')) {
-      throw new Error('O banco recusou esta operação. Execute backend/supabase-admin-policies.sql e confirme que seu perfil possui role admin.');
+      throw new Error('Você não tem permissão para realizar esta operação.');
     }
     throw error;
   }
@@ -85,10 +85,10 @@ export async function uploadContentImage(file, folder = 'content') {
     .upload(path, file, { contentType: file.type || 'image/jpeg', upsert: false });
   if (error) {
     if (/bucket not found/i.test(error.message || '')) {
-      throw new Error('O bucket content-images não existe. Execute backend/supabase-storage.sql no SQL Editor do Supabase.');
+      throw new Error('O envio de imagens está indisponível no momento.');
     }
     if (/row-level security|policy/i.test(error.message || '')) {
-      throw new Error('O Storage recusou o envio. Execute backend/supabase-storage.sql e confirme que sua conta possui role admin.');
+      throw new Error('Você não tem permissão para enviar imagens.');
     }
     throw error;
   }

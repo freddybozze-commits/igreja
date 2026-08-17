@@ -1,5 +1,5 @@
 import {
-  getRemoteContent, getCurrentUser, isSupabaseActive, onAuthChange,
+  getRemoteContent, getCurrentUser, onAuthChange,
   sendPrayerRequest, signIn, signOut, signUp, updateProfile
 } from './supabase-service.js';
 
@@ -194,10 +194,6 @@ function renderHome() {
           <blockquote>“${e(verse.text)}”</blockquote>
           <cite>${e(verse.reference)}</cite>
         </section>
-        <section class="section form-note">
-          <strong>${isSupabaseActive() ? 'Conteúdo conectado ao Supabase' : 'Modo demonstração local'}</strong><br>
-          ${isSupabaseActive() ? 'Publicações, eventos e cadastros estão conectados.' : 'Preencha js/supabase-config.js para ativar banco de dados, cadastro e login.'}
-        </section>
       </aside>
     </div>`;
 }
@@ -232,8 +228,7 @@ function renderAgenda() {
   const events = state.data.events.filter((x) => x.published !== false);
   main.innerHTML = `
     ${pageHead('Agenda', 'Cultos, conferências e encontros da igreja.')}
-    <section class="event-list">${events.map(eventRow).join('')}</section>
-    <section class="section form-note">Toque em um evento para ver os detalhes. O botão “Como chegar” abre a localização da igreja no aplicativo de mapas.</section>`;
+    <section class="event-list">${events.map(eventRow).join('')}</section>`;
 }
 
 function renderPrayer() {
@@ -246,7 +241,6 @@ function renderPrayer() {
         <div class="field"><label for="prayerText">Pedido</label><textarea id="prayerText" name="request" maxlength="1500" required placeholder="Escreva seu pedido de oração..."></textarea></div>
         <label style="display:flex;gap:9px;align-items:flex-start;font-size:12px;color:var(--muted)"><input type="checkbox" name="private" checked style="margin-top:2px"> Manter este pedido reservado à equipe de oração.</label>
         <button class="btn orange" type="submit">Enviar pedido</button>
-        <div class="form-note">${isSupabaseActive() ? `O pedido será enviado com segurança${state.user ? ' e vinculado ao seu cadastro' : ''}.` : 'Modo local: o pedido ficará somente neste navegador até o Supabase ser configurado.'}</div>
       </form>
     </section>`;
 
@@ -267,7 +261,7 @@ function renderPrayer() {
       const result = await sendPrayerRequest(payload);
       form.reset();
       form.elements.private.checked = true;
-      showToast(result.mode === 'supabase' ? 'Pedido enviado com sucesso.' : 'Pedido salvo neste aparelho (modo local).');
+      showToast(result.mode === 'supabase' ? 'Pedido enviado com sucesso.' : 'Pedido salvo com sucesso.');
     } catch (error) {
       console.error(error);
       showToast('Não foi possível enviar agora. Tente novamente.');
@@ -295,7 +289,6 @@ function renderProfile() {
           <div class="field"><label for="authPassword">Senha</label><input id="authPassword" name="password" required type="password" minlength="6" autocomplete="${registering ? 'new-password' : 'current-password'}" placeholder="Mínimo de 6 caracteres"></div>
           <button class="btn silver" type="submit">${registering ? 'Criar meu cadastro' : 'Entrar'}</button>
           <p class="form-message" id="authMessage" role="status"></p>
-          ${!isSupabaseActive() ? '<div class="form-note">Para ativar cadastros, preencha a URL e a chave pública em <strong>js/supabase-config.js</strong>.</div>' : ''}
         </form>
       </section>`;
     bindAuthForm();
@@ -325,7 +318,7 @@ function authErrorMessage(error) {
   const message = String(error?.message || '');
   if (message.includes('Invalid login credentials')) return 'E-mail ou senha incorretos.';
   if (message.includes('User already registered')) return 'Este e-mail já possui cadastro.';
-  if (message.includes('SUPABASE_NOT_CONFIGURED')) return 'Configure o Supabase para ativar esta função.';
+  if (message.includes('SUPABASE_NOT_CONFIGURED')) return 'Serviço indisponível no momento.';
   return message || 'Não foi possível concluir. Tente novamente.';
 }
 
@@ -537,7 +530,7 @@ async function start() {
     await loadData();
   } catch (error) {
     console.error(error);
-    main.innerHTML = `<div class="empty-state"><h2>Não foi possível iniciar o PWA</h2><p>Publique estes arquivos em um servidor HTTPS ou abra por um servidor local. PWAs não funcionam corretamente via file://.</p></div>`;
+    main.innerHTML = `<div class="empty-state"><h2>Não foi possível iniciar</h2><p>Tente novamente em alguns instantes.</p></div>`;
   }
 }
 

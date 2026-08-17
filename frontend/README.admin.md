@@ -62,6 +62,8 @@ Conteúdo com **Publicado** desmarcado permanece no banco e no painel, mas não 
 
 Cada área possui uma rota própria no painel: `#overview`, `#posts`, `#events`, `#highlights` e `#prayers`. Formulários de criação e edição também têm URLs próprias, facilitando voltar e atualizar a página sem perder a seção atual.
 
+No celular, as rotas aparecem na barra inferior e cada registro é mostrado como cartão. O botão **Baixar app** instala o PWA quando o navegador oferece instalação; no iPhone, ele orienta o uso de **Compartilhar > Adicionar à Tela de Início**.
+
 ## Problemas comuns
 
 - **“Supabase ainda não configurado”**: confira as variáveis da Vercel e faça um novo deploy.

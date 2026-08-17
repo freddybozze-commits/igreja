@@ -27,4 +27,4 @@ const anonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANO
 
 writeFileSync(resolve(root, 'js', 'supabase-config.js'), `// Gerado automaticamente no build. Não edite manualmente.\nexport const SUPABASE_URL = ${JSON.stringify(url)};\nexport const SUPABASE_ANON_KEY = ${JSON.stringify(anonKey)};\n`);
 
-console.log(url.startsWith('https://') ? 'Configuração pública do Supabase gerada.' : 'Build concluído em modo demonstração.');
+console.log(url.startsWith('https://') ? 'Configuração gerada.' : 'Build concluído.');

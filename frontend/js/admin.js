@@ -13,6 +13,7 @@ const loginView = document.querySelector('#loginView');
 const dashboardView = document.querySelector('#dashboardView');
 const adminContent = document.querySelector('#adminContent');
 const logoutButton = document.querySelector('#logoutButton');
+const downloadAdminButton = document.querySelector('#downloadAdminButton');
 const adminUser = document.querySelector('#adminUser');
 const adminToast = document.querySelector('#adminToast');
 
@@ -23,7 +24,8 @@ const state = {
   events: [],
   highlights: [],
   prayers: [],
-  loading: false
+  loading: false,
+  deferredInstallPrompt: null
 };
 
 const e = (value = '') => String(value)
@@ -91,14 +93,13 @@ function formatDateTimeLocal(value) {
 function overviewView() {
   const newPrayers = state.prayers.filter((p) => (p.status || 'received') === 'received').length;
   return `
-    <header class="admin-page-head"><div><h1>Visão geral</h1><p>Conteúdo e pedidos recebidos pelo PWA.</p></div><button class="btn small" data-admin-refresh>Atualizar</button></header>
+    <header class="admin-page-head"><div><h1>Visão geral</h1></div><button class="btn small" data-admin-refresh>Atualizar</button></header>
     <div class="admin-stats">
       <article class="admin-stat"><strong>${state.posts.length}</strong><span>Publicações</span></article>
       <article class="admin-stat"><strong>${state.events.length}</strong><span>Eventos</span></article>
       <article class="admin-stat"><strong>${state.highlights.length}</strong><span>Destaques</span></article>
       <article class="admin-stat"><strong>${newPrayers}</strong><span>Pedidos novos</span></article>
-    </div>
-    <section class="section form-note"><strong>PWA conectado ao Supabase.</strong><br>Use o menu para cadastrar, editar ou excluir publicações e eventos. Pedidos de oração podem ser marcados como atendidos.</section>`;
+    </div>`;
 }
 
 function documentTable(type, items) {
@@ -111,11 +112,11 @@ function documentTable(type, items) {
         <tbody>
           ${items.length ? items.map((item) => `
             <tr>
-              <td><img src="${e(item.image || 'assets/images/logo igreja.png')}" alt=""></td>
-              <td><strong>${e(item.title || 'Sem título')}</strong><br><small>${e((item.subtitle || item.description || '').slice(0, 90))}</small></td>
-              <td>${isPost ? e(item.category || '—') : isHighlight ? `${e(item.sort_order ?? 0)} · ${e(item.route || 'ministries')}` : e(formatDate(item.starts_at))}</td>
-              <td>${item.published === false ? 'Não' : 'Sim'}</td>
-              <td><div class="admin-row-actions"><button data-admin-edit="${e(type)}" data-id="${e(item.id)}">Editar</button><button class="danger" data-admin-delete="${e(type)}" data-id="${e(item.id)}">Excluir</button></div></td>
+              <td class="admin-cell-image"><img src="${e(item.image || 'assets/images/logo igreja.png')}" alt=""></td>
+              <td class="admin-cell-title"><strong>${e(item.title || 'Sem título')}</strong><br><small>${e((item.subtitle || item.description || '').slice(0, 90))}</small></td>
+              <td data-label="${isPost ? 'Categoria' : isHighlight ? 'Ordem / destino' : 'Data / horário'}">${isPost ? e(item.category || '—') : isHighlight ? `${e(item.sort_order ?? 0)} · ${e(item.route || 'ministries')}` : e(formatDate(item.starts_at))}</td>
+              <td data-label="Publicado">${item.published === false ? 'Não' : 'Sim'}</td>
+              <td class="admin-cell-actions"><div class="admin-row-actions"><button data-admin-edit="${e(type)}" data-id="${e(item.id)}">Editar</button><button class="danger" data-admin-delete="${e(type)}" data-id="${e(item.id)}">Excluir</button></div></td>
             </tr>`).join('') : '<tr><td colspan="5">Nenhum registro.</td></tr>'}
         </tbody>
       </table>
@@ -126,7 +127,7 @@ function listView(type) {
   const items = type === 'posts' ? state.posts : type === 'events' ? state.events : state.highlights;
   const title = type === 'posts' ? 'Publicações' : type === 'events' ? 'Eventos' : 'Destaques';
   return `
-    <header class="admin-page-head"><div><h1>${title}</h1><p>Gerencie o conteúdo exibido no aplicativo.</p></div><button class="btn orange small" data-admin-new="${type}">+ Novo</button></header>
+    <header class="admin-page-head"><div><h1>${title}</h1></div><button class="btn orange small" data-admin-new="${type}">+ Novo</button></header>
     ${documentTable(type, items)}`;
 }
 
@@ -137,7 +138,7 @@ function editorView(type, item = {}) {
   const title = item.id ? `Editar ${label}` : `${isPost ? 'Nova' : 'Novo'} ${label}`;
   const subtitle = item.subtitle || item.description || '';
   return `
-    <header class="admin-page-head"><div><h1>${title}</h1><p>Salve para publicar as alterações no PWA.</p></div><button class="btn light small" data-admin-cancel="${type}">Cancelar</button></header>
+    <header class="admin-page-head"><div><h1>${title}</h1></div><button class="btn light small" data-admin-cancel="${type}">Cancelar</button></header>
     <div class="admin-editor">
       <form id="contentEditor" class="admin-form" data-type="${type}" data-id="${e(item.id || '')}">
         <div class="field"><label>Título</label><input name="title" required maxlength="140" value="${e(item.title || '')}"></div>
@@ -155,7 +156,7 @@ function editorView(type, item = {}) {
 function prayersView() {
   const sorted = [...state.prayers].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   return `
-    <header class="admin-page-head"><div><h1>Pedidos de oração</h1><p>Conteúdo reservado à equipe autorizada.</p></div><button class="btn small" data-admin-refresh>Atualizar</button></header>
+    <header class="admin-page-head"><div><h1>Pedidos de oração</h1></div><button class="btn small" data-admin-refresh>Atualizar</button></header>
     <div class="prayer-list">${sorted.length ? sorted.map((p) => `
       <article class="prayer-card">
         <div class="prayer-meta"><span>${e(formatDate(p.created_at))}</span><span>${p.is_private === false ? 'Compartilhável' : 'Reservado'}</span></div>
@@ -253,7 +254,44 @@ function setupEditorPreview(form) {
   });
 }
 
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  state.deferredInstallPrompt = event;
+});
+
+window.addEventListener('appinstalled', () => {
+  state.deferredInstallPrompt = null;
+  downloadAdminButton.textContent = 'Instalado';
+  downloadAdminButton.disabled = true;
+  showToast('Aplicativo instalado.');
+});
+
+downloadAdminButton?.addEventListener('click', async () => {
+  if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+    showToast('O aplicativo já está instalado.');
+    return;
+  }
+  if (state.deferredInstallPrompt) {
+    state.deferredInstallPrompt.prompt();
+    await state.deferredInstallPrompt.userChoice;
+    state.deferredInstallPrompt = null;
+    return;
+  }
+  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  showToast(isIos ? 'Use Compartilhar e escolha “Adicionar à Tela de Início”.' : 'Use a opção “Instalar aplicativo” no menu do navegador.');
+});
+
+async function registerAdminServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    await navigator.serviceWorker.register('./sw.js', { scope: './' });
+  } catch (error) {
+    console.warn('Não foi possível preparar a instalação.', error);
+  }
+}
+
 async function init() {
+  registerAdminServiceWorker();
   showOnly(loginView);
   await observeAuth(async (user) => {
     if (!user) {
