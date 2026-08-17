@@ -11,10 +11,6 @@ const detailDialog = document.querySelector('#detailDialog');
 const installButton = document.querySelector('#installButton');
 const themeButton = document.querySelector('#themeButton');
 const connectionStatus = document.querySelector('#connectionStatus');
-const introScreen = document.querySelector('#introScreen');
-const introVideo = document.querySelector('#introVideo');
-const introSkip = document.querySelector('#introSkip');
-const introSound = document.querySelector('#introSound');
 
 const state = {
   data: null,
@@ -32,39 +28,6 @@ const e = (value = '') => String(value)
   .replaceAll('>', '&gt;')
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#039;');
-
-function setupIntro() {
-  if (!introScreen || !introVideo) return;
-  let closed = false;
-  const safetyTimer = setTimeout(closeIntro, 45000);
-
-  function closeIntro() {
-    if (closed) return;
-    closed = true;
-    clearTimeout(safetyTimer);
-    introVideo.pause();
-    introScreen.classList.add('closing');
-    document.body.classList.remove('intro-active');
-    setTimeout(() => { introScreen.hidden = true; }, 500);
-  }
-
-  introVideo.addEventListener('ended', closeIntro, { once: true });
-  introVideo.addEventListener('error', closeIntro, { once: true });
-  introSkip?.addEventListener('click', closeIntro);
-  introSound?.addEventListener('click', () => {
-    introVideo.muted = !introVideo.muted;
-    introSound.textContent = introVideo.muted ? 'Ativar som' : 'Desativar som';
-    introSound.setAttribute('aria-label', introSound.textContent);
-    if (introVideo.paused) introVideo.play().catch(() => {});
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeIntro();
-  }, { once: true });
-
-  introVideo.play().catch(() => {
-    introSkip.textContent = 'Entrar no app';
-  });
-}
 
 function safeUrl(value = '') {
   const raw = String(value).trim();
@@ -559,7 +522,6 @@ async function registerServiceWorker() {
 }
 
 async function start() {
-  setupIntro();
   initTheme();
   updateConnection();
   setupEvents();

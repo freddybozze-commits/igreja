@@ -16,9 +16,10 @@
 </head>
 <body class="intro-active">
   <div id="introScreen" class="intro-screen" role="dialog" aria-label="Vídeo de abertura">
-    <video id="introVideo" class="intro-video" autoplay muted playsinline preload="auto">
+    <video id="introVideo" class="intro-video" autoplay muted playsinline preload="auto" poster="assets/images/app_icon_silver.png">
       <source src="assets/videos/intro.mp4" type="video/mp4">
     </video>
+    <button id="introPlay" class="intro-play" type="button" aria-label="Reproduzir vídeo de abertura">▶ <span>Reproduzir intro</span></button>
     <div class="intro-controls">
       <button id="introSound" class="intro-control" type="button" aria-label="Ativar som">Ativar som</button>
       <button id="introSkip" class="intro-control" type="button">Pular intro</button>
@@ -81,6 +82,7 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <dialog id="detailDialog" class="detail-dialog"></dialog>
 
+  <script src="js/intro.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
