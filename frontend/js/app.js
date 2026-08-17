@@ -139,7 +139,7 @@ function eventRow(event) {
 
 function highlight(item) {
   return `
-    <button class="highlight" data-route="ministries" aria-label="${e(item.title)}">
+    <button class="highlight" data-route="${e(item.route || 'ministries')}" aria-label="${e(item.title)}">
       <span class="highlight-ring"><img src="${e(safeUrl(item.image))}" alt="" loading="lazy"></span>
       <strong>${e(item.title)}</strong>
     </button>`;
@@ -449,6 +449,7 @@ async function loadData() {
   if (remote) {
     if (remote.posts?.length) state.data.posts = remote.posts;
     if (remote.events?.length) state.data.events = remote.events;
+    if (remote.highlights?.length) state.data.highlights = remote.highlights;
     renderRoute(currentRoute());
   }
 }

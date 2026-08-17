@@ -7,7 +7,8 @@ O painel está disponível em `/admin.html` (ou `/admin` na Vercel). Ele usa a m
 1. Abra o projeto no Supabase.
 2. Entre em **SQL Editor > New query**.
 3. Cole o conteúdo completo de `backend/supabase.sql` e execute uma vez.
-4. Confirme em **Storage** que o bucket público `content-images` foi criado.
+4. Confirme em **Storage** que o bucket público `content-images` foi criado. Se o banco já estava configurado antes da criação do painel, execute também `backend/supabase-storage.sql`.
+5. Para instalar ou reparar as permissões do painel, execute `backend/supabase-admin-policies.sql`.
 
 O SQL cria as tabelas, políticas RLS e permissões administrativas. Visitantes continuam vendo somente posts e eventos publicados. Apenas perfis com `role = 'admin'` podem criar, editar e excluir conteúdo, consultar pedidos de oração e enviar imagens.
 
@@ -53,10 +54,13 @@ A promoção deve ser feita no SQL Editor. Não altere o JavaScript para aceitar
 - **Visão geral:** mostra as quantidades de publicações, eventos e pedidos novos.
 - **Publicações:** cria, edita, publica, oculta ou exclui posts.
 - **Eventos:** cadastra título, descrição, data/hora, local e imagem.
+- **Destaques:** cria os círculos exibidos na página inicial, define a ordem e a tela aberta ao clicar.
 - **Pedidos de oração:** lista pedidos reservados e permite alternar entre novo e atendido.
 - **Imagens:** informe uma URL existente ou envie um arquivo de até 6 MB ao bucket `content-images`.
 
 Conteúdo com **Publicado** desmarcado permanece no banco e no painel, mas não aparece para visitantes do PWA.
+
+Cada área possui uma rota própria no painel: `#overview`, `#posts`, `#events`, `#highlights` e `#prayers`. Formulários de criação e edição também têm URLs próprias, facilitando voltar e atualizar a página sem perder a seção atual.
 
 ## Problemas comuns
 

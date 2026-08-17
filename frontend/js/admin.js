@@ -1,5 +1,4 @@
 import {
-  isAdminSupabaseConfigured,
   observeAuth,
   signIn,
   signOutAdmin,
@@ -10,7 +9,6 @@ import {
   uploadContentImage
 } from './admin-service.js';
 
-const setupView = document.querySelector('#setupView');
 const loginView = document.querySelector('#loginView');
 const dashboardView = document.querySelector('#dashboardView');
 const adminContent = document.querySelector('#adminContent');
@@ -23,6 +21,7 @@ const state = {
   tab: 'overview',
   posts: [],
   events: [],
+  highlights: [],
   prayers: [],
   loading: false
 };
@@ -42,15 +41,30 @@ function showToast(message) {
 }
 
 function showOnly(view) {
-  [setupView, loginView, dashboardView].forEach((item) => item.hidden = item !== view);
+  [loginView, dashboardView].forEach((item) => item.hidden = item !== view);
+}
+
+const adminSections = new Set(['overview', 'posts', 'events', 'highlights', 'prayers']);
+
+function currentAdminRoute() {
+  const parts = (location.hash || '#overview').slice(1).split('/').filter(Boolean);
+  const section = adminSections.has(parts[0]) ? parts[0] : 'overview';
+  return { section, action: parts[1] || '', id: parts[2] || '' };
+}
+
+function navigateAdmin(path) {
+  const hash = `#${path}`;
+  if (location.hash === hash) renderAdmin();
+  else location.hash = hash;
 }
 
 async function refreshAll() {
   state.loading = true;
   try {
-    [state.posts, state.events, state.prayers] = await Promise.all([
+    [state.posts, state.events, state.highlights, state.prayers] = await Promise.all([
       listDocuments('posts'),
       listDocuments('events'),
+      listDocuments('highlights'),
       listDocuments('prayers')
     ]);
   } finally {
@@ -81,6 +95,7 @@ function overviewView() {
     <div class="admin-stats">
       <article class="admin-stat"><strong>${state.posts.length}</strong><span>Publicações</span></article>
       <article class="admin-stat"><strong>${state.events.length}</strong><span>Eventos</span></article>
+      <article class="admin-stat"><strong>${state.highlights.length}</strong><span>Destaques</span></article>
       <article class="admin-stat"><strong>${newPrayers}</strong><span>Pedidos novos</span></article>
     </div>
     <section class="section form-note"><strong>PWA conectado ao Supabase.</strong><br>Use o menu para cadastrar, editar ou excluir publicações e eventos. Pedidos de oração podem ser marcados como atendidos.</section>`;
@@ -88,16 +103,17 @@ function overviewView() {
 
 function documentTable(type, items) {
   const isPost = type === 'posts';
+  const isHighlight = type === 'highlights';
   return `
     <div class="admin-table-wrap">
       <table class="admin-table">
-        <thead><tr><th>Imagem</th><th>Título</th><th>${isPost ? 'Categoria' : 'Data / horário'}</th><th>Publicado</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Imagem</th><th>Título</th><th>${isPost ? 'Categoria' : isHighlight ? 'Ordem / destino' : 'Data / horário'}</th><th>Publicado</th><th>Ações</th></tr></thead>
         <tbody>
           ${items.length ? items.map((item) => `
             <tr>
               <td><img src="${e(item.image || 'assets/images/logo igreja.png')}" alt=""></td>
               <td><strong>${e(item.title || 'Sem título')}</strong><br><small>${e((item.subtitle || item.description || '').slice(0, 90))}</small></td>
-              <td>${isPost ? e(item.category || '—') : e(formatDate(item.starts_at))}</td>
+              <td>${isPost ? e(item.category || '—') : isHighlight ? `${e(item.sort_order ?? 0)} · ${e(item.route || 'ministries')}` : e(formatDate(item.starts_at))}</td>
               <td>${item.published === false ? 'Não' : 'Sim'}</td>
               <td><div class="admin-row-actions"><button data-admin-edit="${e(type)}" data-id="${e(item.id)}">Editar</button><button class="danger" data-admin-delete="${e(type)}" data-id="${e(item.id)}">Excluir</button></div></td>
             </tr>`).join('') : '<tr><td colspan="5">Nenhum registro.</td></tr>'}
@@ -107,8 +123,8 @@ function documentTable(type, items) {
 }
 
 function listView(type) {
-  const items = type === 'posts' ? state.posts : state.events;
-  const title = type === 'posts' ? 'Publicações' : 'Eventos';
+  const items = type === 'posts' ? state.posts : type === 'events' ? state.events : state.highlights;
+  const title = type === 'posts' ? 'Publicações' : type === 'events' ? 'Eventos' : 'Destaques';
   return `
     <header class="admin-page-head"><div><h1>${title}</h1><p>Gerencie o conteúdo exibido no aplicativo.</p></div><button class="btn orange small" data-admin-new="${type}">+ Novo</button></header>
     ${documentTable(type, items)}`;
@@ -116,21 +132,23 @@ function listView(type) {
 
 function editorView(type, item = {}) {
   const isPost = type === 'posts';
-  const title = item.id ? `Editar ${isPost ? 'publicação' : 'evento'}` : `Nova ${isPost ? 'publicação' : 'programação'}`;
+  const isHighlight = type === 'highlights';
+  const label = isPost ? 'publicação' : isHighlight ? 'destaque' : 'evento';
+  const title = item.id ? `Editar ${label}` : `${isPost ? 'Nova' : 'Novo'} ${label}`;
   const subtitle = item.subtitle || item.description || '';
   return `
     <header class="admin-page-head"><div><h1>${title}</h1><p>Salve para publicar as alterações no PWA.</p></div><button class="btn light small" data-admin-cancel="${type}">Cancelar</button></header>
     <div class="admin-editor">
       <form id="contentEditor" class="admin-form" data-type="${type}" data-id="${e(item.id || '')}">
         <div class="field"><label>Título</label><input name="title" required maxlength="140" value="${e(item.title || '')}"></div>
-        <div class="field"><label>${isPost ? 'Descrição' : 'Descrição do evento'}</label><textarea name="description" maxlength="1200">${e(subtitle)}</textarea></div>
-        ${isPost ? `<div class="field"><label>Categoria</label><input name="category" maxlength="60" value="${e(item.category || 'Cultos')}"></div><div class="field"><label>Data / chamada</label><input name="date" maxlength="80" value="${e(item.date || '')}"></div>` : `<div class="field"><label>Data e horário</label><input name="starts_at" type="datetime-local" value="${e(formatDateTimeLocal(item.starts_at))}"></div><div class="field"><label>Local</label><input name="location" maxlength="120" value="${e(item.location || 'IEPP Curitiba')}"></div>`}
+        ${isHighlight ? '' : `<div class="field"><label>${isPost ? 'Descrição' : 'Descrição do evento'}</label><textarea name="description" maxlength="1200">${e(subtitle)}</textarea></div>`}
+        ${isPost ? `<div class="field"><label>Categoria</label><input name="category" maxlength="60" value="${e(item.category || 'Cultos')}"></div><div class="field"><label>Data / chamada</label><input name="date" maxlength="80" value="${e(item.date || '')}"></div>` : isHighlight ? `<div class="field"><label>Ordem</label><input name="sort_order" type="number" min="0" step="1" value="${e(item.sort_order ?? 0)}"></div><div class="field"><label>Destino ao clicar</label><select name="route"><option value="ministries" ${item.route === 'ministries' ? 'selected' : ''}>Ministérios</option><option value="agenda" ${item.route === 'agenda' ? 'selected' : ''}>Agenda</option><option value="posts" ${item.route === 'posts' ? 'selected' : ''}>Publicações</option><option value="home" ${item.route === 'home' ? 'selected' : ''}>Início</option></select></div>` : `<div class="field"><label>Data e horário</label><input name="starts_at" type="datetime-local" value="${e(formatDateTimeLocal(item.starts_at))}"></div><div class="field"><label>Local</label><input name="location" maxlength="120" value="${e(item.location || 'IEPP Curitiba')}"></div>`}
         <div class="field"><label>URL da imagem</label><input name="image" id="imageUrl" value="${e(item.image || '')}" placeholder="https://..."></div>
         <div class="field"><label>Ou enviar imagem</label><input class="admin-file" name="imageFile" type="file" accept="image/*"></div>
         <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" name="published" ${item.published === false ? '' : 'checked'}> Publicado</label>
         <div class="admin-toolbar"><button class="btn orange" type="submit">Salvar</button><button class="btn light" type="button" data-admin-cancel="${type}">Cancelar</button></div>
       </form>
-      <aside class="admin-preview"><img id="previewImage" src="${e(item.image || 'assets/images/logo igreja.png')}" alt=""><h3 id="previewTitle">${e(item.title || 'Prévia do conteúdo')}</h3><p id="previewText">${e(subtitle || 'A descrição aparecerá aqui.')}</p></aside>
+      <aside class="admin-preview ${isHighlight ? 'highlight-preview' : ''}"><img id="previewImage" src="${e(item.image || 'assets/images/logo igreja.png')}" alt=""><h3 id="previewTitle">${e(item.title || 'Prévia do conteúdo')}</h3>${isHighlight ? '' : `<p id="previewText">${e(subtitle || 'A descrição aparecerá aqui.')}</p>`}</aside>
     </div>`;
 }
 
@@ -149,21 +167,31 @@ function prayersView() {
 }
 
 function renderAdmin() {
+  const route = currentAdminRoute();
+  state.tab = route.section;
   document.querySelectorAll('.admin-tab').forEach((button) => button.classList.toggle('active', button.dataset.adminTab === state.tab));
   if (state.loading) {
     adminContent.innerHTML = '<div class="empty-state">Carregando dados…</div>';
     return;
   }
-  if (state.tab === 'overview') adminContent.innerHTML = overviewView();
-  else if (state.tab === 'posts') adminContent.innerHTML = listView('posts');
-  else if (state.tab === 'events') adminContent.innerHTML = listView('events');
+  if (route.action === 'new' && ['posts', 'events', 'highlights'].includes(route.section)) {
+    adminContent.innerHTML = editorView(route.section);
+    setupEditorPreview(document.querySelector('#contentEditor'));
+  } else if (route.action === 'edit' && route.id && ['posts', 'events', 'highlights'].includes(route.section)) {
+    const item = state[route.section].find((entry) => entry.id === route.id) || {};
+    adminContent.innerHTML = editorView(route.section, item);
+    setupEditorPreview(document.querySelector('#contentEditor'));
+  } else if (state.tab === 'overview') adminContent.innerHTML = overviewView();
+  else if (['posts', 'events', 'highlights'].includes(state.tab)) adminContent.innerHTML = listView(state.tab);
   else if (state.tab === 'prayers') adminContent.innerHTML = prayersView();
+  adminContent.scrollTop = 0;
 }
 
 async function handleEditorSubmit(form) {
   const type = form.dataset.type;
   const id = form.dataset.id || null;
   const isPost = type === 'posts';
+  const isHighlight = type === 'highlights';
   const submit = form.querySelector('button[type="submit"]');
   submit.disabled = true;
   submit.textContent = 'Salvando…';
@@ -172,7 +200,7 @@ async function handleEditorSubmit(form) {
     const file = form.elements.imageFile.files[0];
     if (file) {
       if (file.size > 6 * 1024 * 1024) throw new Error('A imagem deve ter no máximo 6 MB.');
-      image = await uploadContentImage(file, isPost ? 'posts' : 'events');
+      image = await uploadContentImage(file, type);
     }
     const common = {
       title: form.elements.title.value.trim(),
@@ -184,6 +212,10 @@ async function handleEditorSubmit(form) {
       subtitle: form.elements.description.value.trim(),
       category: form.elements.category.value.trim(),
       date: form.elements.date.value.trim()
+    } : isHighlight ? {
+      ...common,
+      route: form.elements.route.value,
+      sort_order: Number(form.elements.sort_order.value) || 0
     } : {
       ...common,
       description: form.elements.description.value.trim(),
@@ -192,8 +224,7 @@ async function handleEditorSubmit(form) {
     };
     await saveDocument(type, payload, id);
     await refreshAll();
-    state.tab = type;
-    renderAdmin();
+    navigateAdmin(type);
     showToast('Conteúdo salvo.');
   } catch (error) {
     console.error(error);
@@ -211,10 +242,11 @@ function setupEditorPreview(form) {
   const file = form.querySelector('[name="imageFile"]');
   const update = () => {
     document.querySelector('#previewTitle').textContent = title.value || 'Prévia do conteúdo';
-    document.querySelector('#previewText').textContent = description.value || 'A descrição aparecerá aqui.';
+    const previewText = document.querySelector('#previewText');
+    if (previewText && description) previewText.textContent = description.value || 'A descrição aparecerá aqui.';
     if (image.value) document.querySelector('#previewImage').src = image.value;
   };
-  [title, description, image].forEach((input) => input.addEventListener('input', update));
+  [title, description, image].filter(Boolean).forEach((input) => input.addEventListener('input', update));
   file.addEventListener('change', () => {
     const selected = file.files[0];
     if (selected) document.querySelector('#previewImage').src = URL.createObjectURL(selected);
@@ -222,11 +254,6 @@ function setupEditorPreview(form) {
 }
 
 async function init() {
-  if (!isAdminSupabaseConfigured()) {
-    showOnly(setupView);
-    return;
-  }
-
   showOnly(loginView);
   await observeAuth(async (user) => {
     if (!user) {
@@ -247,6 +274,7 @@ async function init() {
       adminUser.textContent = user.email || user.id;
       logoutButton.hidden = false;
       showOnly(dashboardView);
+      if (!location.hash) history.replaceState(null, '', '#overview');
       await refreshAll();
       renderAdmin();
     } catch (error) {
@@ -278,13 +306,6 @@ document.querySelector('#loginForm')?.addEventListener('submit', async (event) =
 logoutButton.addEventListener('click', signOutAdmin);
 
 document.addEventListener('click', async (event) => {
-  const tab = event.target.closest('[data-admin-tab]');
-  if (tab) {
-    state.tab = tab.dataset.adminTab;
-    renderAdmin();
-    return;
-  }
-
   if (event.target.closest('[data-admin-refresh]')) {
     await refreshAll();
     renderAdmin();
@@ -294,25 +315,20 @@ document.addEventListener('click', async (event) => {
 
   const create = event.target.closest('[data-admin-new]');
   if (create) {
-    adminContent.innerHTML = editorView(create.dataset.adminNew);
-    setupEditorPreview(document.querySelector('#contentEditor'));
+    navigateAdmin(`${create.dataset.adminNew}/new`);
     return;
   }
 
   const edit = event.target.closest('[data-admin-edit]');
   if (edit) {
     const type = edit.dataset.adminEdit;
-    const list = type === 'posts' ? state.posts : state.events;
-    const item = list.find((x) => x.id === edit.dataset.id) || {};
-    adminContent.innerHTML = editorView(type, item);
-    setupEditorPreview(document.querySelector('#contentEditor'));
+    navigateAdmin(`${type}/edit/${edit.dataset.id}`);
     return;
   }
 
   const cancel = event.target.closest('[data-admin-cancel]');
   if (cancel) {
-    state.tab = cancel.dataset.adminCancel;
-    renderAdmin();
+    navigateAdmin(cancel.dataset.adminCancel);
     return;
   }
 
@@ -344,6 +360,10 @@ document.addEventListener('click', async (event) => {
       showToast('Não foi possível atualizar.');
     }
   }
+});
+
+window.addEventListener('hashchange', () => {
+  if (state.user) renderAdmin();
 });
 
 document.addEventListener('submit', async (event) => {

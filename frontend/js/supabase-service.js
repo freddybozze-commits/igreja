@@ -22,19 +22,22 @@ export const isSupabaseActive = () => Boolean(supabase);
 
 export async function getRemoteContent() {
   if (!supabase) return null;
-  const [postsResult, eventsResult] = await Promise.all([
+  const [postsResult, eventsResult, highlightsResult] = await Promise.all([
     supabase.from('posts').select('*').eq('published', true).order('created_at', { ascending: false }),
-    supabase.from('events').select('*').eq('published', true).order('starts_at', { ascending: true })
+    supabase.from('events').select('*').eq('published', true).order('starts_at', { ascending: true }),
+    supabase.from('highlights').select('*').eq('published', true).order('sort_order', { ascending: true })
   ]);
   if (postsResult.error) console.warn('Supabase posts:', postsResult.error.message);
   if (eventsResult.error) console.warn('Supabase events:', eventsResult.error.message);
+  if (highlightsResult.error) console.warn('Supabase highlights:', highlightsResult.error.message);
   return {
     posts: postsResult.data || [],
     events: (eventsResult.data || []).map((item) => ({
       ...item,
       date: item.date || (item.starts_at ? new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(item.starts_at)).toUpperCase() : ''),
       time: item.time || (item.starts_at ? new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(new Date(item.starts_at)) : '')
-    }))
+    })),
+    highlights: highlightsResult.data || []
   };
 }
 

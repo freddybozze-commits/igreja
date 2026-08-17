@@ -21,6 +21,12 @@ create table if not exists public.events (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.highlights (
+  id uuid primary key default gen_random_uuid(), title text not null,
+  image text, route text not null default 'ministries', sort_order integer not null default 0,
+  published boolean not null default true, created_at timestamptz not null default now()
+);
+
 create table if not exists public.prayer_requests (
   id uuid primary key default gen_random_uuid(), user_id uuid references auth.users(id) on delete set null,
   name text not null, phone text, request text not null, is_private boolean not null default true,
@@ -30,10 +36,12 @@ create table if not exists public.prayer_requests (
 alter table public.profiles enable row level security;
 alter table public.posts enable row level security;
 alter table public.events enable row level security;
+alter table public.highlights enable row level security;
 alter table public.prayer_requests enable row level security;
 
 create policy "Public can read posts" on public.posts for select using (published = true);
 create policy "Public can read events" on public.events for select using (published = true);
+create policy "Public can read highlights" on public.highlights for select using (published = true);
 create policy "Users read own profile" on public.profiles for select using (auth.uid() = id);
 create policy "Users update own profile" on public.profiles for update using (auth.uid() = id);
 create policy "Users insert own profile" on public.profiles for insert with check (auth.uid() = id);
@@ -66,6 +74,7 @@ grant update (full_name, phone, birth_date, updated_at) on public.profiles to au
 create policy "Admins read all profiles" on public.profiles for select using (public.is_admin());
 create policy "Admins manage posts" on public.posts for all using (public.is_admin()) with check (public.is_admin());
 create policy "Admins manage events" on public.events for all using (public.is_admin()) with check (public.is_admin());
+create policy "Admins manage highlights" on public.highlights for all using (public.is_admin()) with check (public.is_admin());
 create policy "Admins manage prayer requests" on public.prayer_requests for all using (public.is_admin()) with check (public.is_admin());
 
 -- Bucket público: qualquer visitante pode ver as imagens, mas apenas admins podem alterá-las.

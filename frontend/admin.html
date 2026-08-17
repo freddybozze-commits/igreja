@@ -17,15 +17,6 @@
   </header>
 
   <main class="admin-main">
-    <section id="setupView" class="admin-center" hidden>
-      <div class="admin-auth-card">
-        <img src="assets/images/logo igreja.png" alt="Logo IEPP Curitiba">
-        <h1>Supabase ainda não configurado</h1>
-        <p>Configure <code>PUBLIC_SUPABASE_URL</code> e <code>PUBLIC_SUPABASE_ANON_KEY</code> e execute o SQL do backend.</p>
-        <a class="btn" href="README.admin.md">Abrir instruções</a>
-      </div>
-    </section>
-
     <section id="loginView" class="admin-center" hidden>
       <form id="loginForm" class="admin-auth-card">
         <img src="assets/images/logo igreja.png" alt="Logo IEPP Curitiba">
@@ -40,10 +31,11 @@
 
     <section id="dashboardView" class="admin-dashboard" hidden>
       <aside class="admin-sidebar">
-        <button class="admin-tab active" data-admin-tab="overview">▦ Visão geral</button>
-        <button class="admin-tab" data-admin-tab="posts">▤ Publicações</button>
-        <button class="admin-tab" data-admin-tab="events">▣ Eventos</button>
-        <button class="admin-tab" data-admin-tab="prayers">♡ Pedidos de oração</button>
+        <a class="admin-tab active" href="#overview" data-admin-tab="overview">▦ Visão geral</a>
+        <a class="admin-tab" href="#posts" data-admin-tab="posts">▤ Publicações</a>
+        <a class="admin-tab" href="#events" data-admin-tab="events">▣ Eventos</a>
+        <a class="admin-tab" href="#highlights" data-admin-tab="highlights">◉ Destaques</a>
+        <a class="admin-tab" href="#prayers" data-admin-tab="prayers">♡ Pedidos de oração</a>
         <a href="index.html#home">← Voltar ao PWA</a>
       </aside>
       <section id="adminContent" class="admin-content"></section>
