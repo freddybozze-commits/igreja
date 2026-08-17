@@ -26,14 +26,14 @@
     "eyebrow": "Programação especial",
     "title": "Conferência Profética da Multiplicação",
     "subtitle": "11 a 23 de agosto • Curitiba",
-    "image": "assets/images/banner_conferencia.jpg"
+    "image": "assets/images/banner_conferencia.png"
   },
   "highlights": [
-    {"title": "Batismo", "image": "assets/images/batismo.jpg"},
-    {"title": "Ministério Kids", "image": "assets/images/ministerio_kids.jpg"},
-    {"title": "Discipulado", "image": "assets/images/discipulado.jpg"},
-    {"title": "Nossos Cultos", "image": "assets/images/culto_familia.jpg"},
-    {"title": "Ao Vivo", "image": "assets/images/ao_vivo.jpg"}
+    {"title": "Batismo", "image": "assets/images/batismo.png"},
+    {"title": "Ministério Kids", "image": "assets/images/ministerio_kids.png"},
+    {"title": "Discipulado", "image": "assets/images/discipulado.png"},
+    {"title": "Nossos Cultos", "image": "assets/images/culto_familia.png"},
+    {"title": "Ao Vivo", "image": "assets/images/ao_vivo.png"}
   ],
   "posts": [
     {
@@ -42,7 +42,7 @@
       "subtitle": "Uma programação especial de fé, milagres e multiplicação.",
       "category": "Em destaque",
       "date": "11 a 23 AGO",
-      "image": "assets/images/banner_conferencia.jpg",
+      "image": "assets/images/banner_conferencia.png",
       "published": true
     },
     {
@@ -51,7 +51,7 @@
       "subtitle": "Uma noite de adoração, comunhão e Palavra.",
       "category": "Cultos",
       "date": "Domingo • 19h",
-      "image": "assets/images/culto_familia.jpg",
+      "image": "assets/images/culto_familia.png",
       "published": true
     },
     {
@@ -60,7 +60,7 @@
       "subtitle": "Tempo de oração, busca e fortalecimento da fé.",
       "category": "Cultos",
       "date": "Quarta-feira • 20h",
-      "image": "assets/images/culto_oracao.jpg",
+      "image": "assets/images/culto_oracao.png",
       "published": true
     },
     {
@@ -69,7 +69,7 @@
       "subtitle": "Acompanhe mensagens e transmissões da igreja.",
       "category": "Ao vivo",
       "date": "Transmissões",
-      "image": "assets/images/ao_vivo.jpg",
+      "image": "assets/images/ao_vivo.png",
       "published": true
     }
   ],
@@ -81,7 +81,7 @@
       "time": "Programação especial",
       "location": "IEPP Curitiba",
       "description": "Conferência especial com programação de 11 a 23 de agosto.",
-      "image": "assets/images/banner_conferencia.jpg",
+      "image": "assets/images/banner_conferencia.png",
       "published": true
     },
     {
@@ -91,7 +91,7 @@
       "time": "19h",
       "location": "IEPP Curitiba",
       "description": "Encontro semanal para toda a família.",
-      "image": "assets/images/culto_familia.jpg",
+      "image": "assets/images/culto_familia.png",
       "published": true
     },
     {
@@ -101,15 +101,15 @@
       "time": "20h",
       "location": "IEPP Curitiba",
       "description": "Uma noite dedicada à oração e comunhão.",
-      "image": "assets/images/culto_oracao.jpg",
+      "image": "assets/images/culto_oracao.png",
       "published": true
     }
   ],
   "ministries": [
-    {"title": "Batismo", "description": "Preparação e acompanhamento para uma nova etapa de fé.", "image": "assets/images/batismo.jpg"},
-    {"title": "Ministério Kids", "description": "Ensino bíblico, cuidado e atividades para as crianças.", "image": "assets/images/ministerio_kids.jpg"},
-    {"title": "Discipulado", "description": "Crescimento, comunhão e serviço no Reino.", "image": "assets/images/discipulado.jpg"},
-    {"title": "Nossos Cultos", "description": "Programação semanal e encontros especiais.", "image": "assets/images/culto_familia.jpg"}
+    {"title": "Batismo", "description": "Preparação e acompanhamento para uma nova etapa de fé.", "image": "assets/images/batismo.png"},
+    {"title": "Ministério Kids", "description": "Ensino bíblico, cuidado e atividades para as crianças.", "image": "assets/images/ministerio_kids.png"},
+    {"title": "Discipulado", "description": "Crescimento, comunhão e serviço no Reino.", "image": "assets/images/discipulado.png"},
+    {"title": "Nossos Cultos", "description": "Programação semanal e encontros especiais.", "image": "assets/images/culto_familia.png"}
   ],
   "verses": [
     {"reference": "João 3:16", "text": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito."},

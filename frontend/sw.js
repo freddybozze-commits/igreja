@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iepp-pwa-v10.0.0';
+const CACHE_NAME = 'iepp-pwa-v11.0.0';
 const APP_SHELL = [
   './',
   './index.html',
@@ -13,18 +13,18 @@ const APP_SHELL = [
   './js/supabase-service.js',
   './data/content.json',
   './assets/images/logo igreja.png',
-  './assets/images/app_icon.png',
-  './assets/images/banner_conferencia.jpg',
-  './assets/images/culto_familia.jpg',
-  './assets/images/culto_oracao.jpg',
-  './assets/images/ao_vivo.jpg',
-  './assets/images/batismo.jpg',
-  './assets/images/ministerio_kids.jpg',
-  './assets/images/discipulado.jpg',
-  './assets/icons/icon-192.png',
-  './assets/icons/icon-512.png',
-  './assets/icons/maskable-192.png',
-  './assets/icons/maskable-512.png'
+  './assets/images/app_icon_silver.png',
+  './assets/images/banner_conferencia.png',
+  './assets/images/culto_familia.png',
+  './assets/images/culto_oracao.png',
+  './assets/images/ao_vivo.png',
+  './assets/images/batismo.png',
+  './assets/images/ministerio_kids.png',
+  './assets/images/discipulado.png',
+  './assets/icons/icon-silver-192.png',
+  './assets/icons/icon-silver-512.png',
+  './assets/icons/maskable-silver-192.png',
+  './assets/icons/maskable-silver-512.png'
 ];
 
 self.addEventListener('install', (event) => {
