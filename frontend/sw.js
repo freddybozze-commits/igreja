@@ -1,10 +1,14 @@
-const CACHE_NAME = 'iepp-pwa-v8.0.0';
+const CACHE_NAME = 'iepp-pwa-v10.0.0';
 const APP_SHELL = [
   './',
   './index.html',
+  './admin.html',
   './manifest.webmanifest',
   './css/styles.css',
+  './css/admin.css',
   './js/app.js',
+  './js/admin.js',
+  './js/admin-service.js',
   './js/supabase-config.js',
   './js/supabase-service.js',
   './data/content.json',

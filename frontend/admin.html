@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#071c3b">
+  <meta name="theme-color" content="#151515">
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" href="assets/icons/icon-192.png">
   <link rel="stylesheet" href="css/styles.css">
@@ -20,9 +20,9 @@
     <section id="setupView" class="admin-center" hidden>
       <div class="admin-auth-card">
         <img src="assets/images/logo igreja.png" alt="Logo IEPP Curitiba">
-        <h1>Firebase ainda não configurado</h1>
-        <p>O PWA público funciona normalmente em modo local. Para usar o painel, preencha <code>js/firebase-config.js</code> com os dados do seu projeto Firebase Web.</p>
-        <a class="btn" href="CONFIGURAR_FIREBASE_PWA.md">Abrir instruções</a>
+        <h1>Supabase ainda não configurado</h1>
+        <p>Configure <code>PUBLIC_SUPABASE_URL</code> e <code>PUBLIC_SUPABASE_ANON_KEY</code> e execute o SQL do backend.</p>
+        <a class="btn" href="README.admin.md">Abrir instruções</a>
       </div>
     </section>
 
@@ -30,7 +30,7 @@
       <form id="loginForm" class="admin-auth-card">
         <img src="assets/images/logo igreja.png" alt="Logo IEPP Curitiba">
         <h1>Área administrativa</h1>
-        <p>Entre com um usuário autorizado na coleção <strong>admins</strong>.</p>
+        <p>Entre com um usuário cujo perfil tenha a função <strong>admin</strong>.</p>
         <div class="field"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="username" required></div>
         <div class="field"><label for="password">Senha</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
         <button class="btn orange" type="submit">Entrar</button>

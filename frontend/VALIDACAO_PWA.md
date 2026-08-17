@@ -5,8 +5,8 @@ Verificações executadas no pacote:
 - `manifest.webmanifest`: JSON válido.
 - `data/content.json`: JSON válido.
 - `js/app.js`: sintaxe JavaScript válida.
-- `js/firebase-config.js`: sintaxe JavaScript válida.
-- `js/firebase-service.js`: sintaxe JavaScript válida.
+- `js/supabase-config.js`: sintaxe JavaScript válida.
+- `js/supabase-service.js`: sintaxe JavaScript válida.
 - `js/admin.js`: sintaxe JavaScript válida.
 - `js/admin-service.js`: sintaxe JavaScript válida.
 - `sw.js`: sintaxe JavaScript válida.

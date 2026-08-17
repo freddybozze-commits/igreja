@@ -53,7 +53,7 @@ function setTheme(theme) {
   themeButton.textContent = theme === 'dark' ? '☀' : '◐';
   themeButton.setAttribute('aria-label', theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro');
   themeButton.title = theme === 'dark' ? 'Clarear site' : 'Escurecer site';
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#151515' : '#f5f1e8');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#151515' : '#f3f4f5');
 }
 
 function initTheme() {
@@ -293,7 +293,7 @@ function renderProfile() {
           ${registering ? '<div class="field"><label for="authName">Nome completo</label><input id="authName" name="name" required maxlength="100" autocomplete="name" placeholder="Seu nome"></div><div class="field"><label for="authPhone">WhatsApp</label><input id="authPhone" name="phone" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="(41) 99999-9999"></div>' : ''}
           <div class="field"><label for="authEmail">E-mail</label><input id="authEmail" name="email" required type="email" autocomplete="email" placeholder="voce@email.com"></div>
           <div class="field"><label for="authPassword">Senha</label><input id="authPassword" name="password" required type="password" minlength="6" autocomplete="${registering ? 'new-password' : 'current-password'}" placeholder="Mínimo de 6 caracteres"></div>
-          <button class="btn gold" type="submit">${registering ? 'Criar meu cadastro' : 'Entrar'}</button>
+          <button class="btn silver" type="submit">${registering ? 'Criar meu cadastro' : 'Entrar'}</button>
           <p class="form-message" id="authMessage" role="status"></p>
           ${!isSupabaseActive() ? '<div class="form-note">Para ativar cadastros, preencha a URL e a chave pública em <strong>js/supabase-config.js</strong>.</div>' : ''}
         </form>
@@ -314,7 +314,7 @@ function renderProfile() {
         <div class="field"><label for="profileName">Nome completo</label><input id="profileName" name="name" required maxlength="100" value="${e(meta.full_name || '')}" autocomplete="name"></div>
         <div class="field"><label for="profilePhone">WhatsApp</label><input id="profilePhone" name="phone" maxlength="30" value="${e(meta.phone || '')}" inputmode="tel" autocomplete="tel"></div>
         <div class="field"><label for="profileBirth">Data de nascimento</label><input id="profileBirth" name="birthDate" type="date" value="${e(meta.birth_date || '')}"></div>
-        <button class="btn gold" type="submit">Salvar meus dados</button>
+        <button class="btn silver" type="submit">Salvar meus dados</button>
         <button class="btn light" id="logoutButton" type="button">Sair da conta</button>
       </form>
     </section>`;

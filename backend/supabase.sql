@@ -40,6 +40,48 @@ create policy "Users insert own profile" on public.profiles for insert with chec
 create policy "Anyone can send prayer request" on public.prayer_requests for insert with check (user_id is null or auth.uid() = user_id);
 create policy "Users read own requests" on public.prayer_requests for select using (auth.uid() = user_id);
 
+-- Retorna verdadeiro somente para usuários autenticados promovidos a administrador.
+-- SECURITY DEFINER evita recursão nas políticas da tabela profiles.
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
+  );
+$$;
+
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to authenticated;
+
+-- Usuários podem editar apenas dados pessoais; o campo role fica fora do alcance do navegador.
+revoke insert, update on public.profiles from authenticated;
+grant insert (id, full_name, phone, birth_date, created_at, updated_at) on public.profiles to authenticated;
+grant update (full_name, phone, birth_date, updated_at) on public.profiles to authenticated;
+
+create policy "Admins read all profiles" on public.profiles for select using (public.is_admin());
+create policy "Admins manage posts" on public.posts for all using (public.is_admin()) with check (public.is_admin());
+create policy "Admins manage events" on public.events for all using (public.is_admin()) with check (public.is_admin());
+create policy "Admins manage prayer requests" on public.prayer_requests for all using (public.is_admin()) with check (public.is_admin());
+
+-- Bucket público: qualquer visitante pode ver as imagens, mas apenas admins podem alterá-las.
+insert into storage.buckets (id, name, public)
+values ('content-images', 'content-images', true)
+on conflict (id) do update set public = excluded.public;
+
+create policy "Public reads content images" on storage.objects
+for select using (bucket_id = 'content-images');
+create policy "Admins upload content images" on storage.objects
+for insert to authenticated with check (bucket_id = 'content-images' and public.is_admin());
+create policy "Admins update content images" on storage.objects
+for update to authenticated using (bucket_id = 'content-images' and public.is_admin()) with check (bucket_id = 'content-images' and public.is_admin());
+create policy "Admins delete content images" on storage.objects
+for delete to authenticated using (bucket_id = 'content-images' and public.is_admin());
+
 create or replace function public.handle_new_user() returns trigger language plpgsql security definer set search_path = public as $$
 begin
   insert into public.profiles (id, full_name, phone)

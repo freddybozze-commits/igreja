@@ -17,8 +17,8 @@ Interface pública
 Roteamento e estado
   js/app.js
         ↓
-Dados locais       Firebase Web
-content.json       firebase-service.js
+Dados locais       Supabase Web
+content.json       supabase-service.js
         ↘          ↙
          Tela / cache offline
 
@@ -29,7 +29,7 @@ Painel administrativo
         ↓
   admin-service.js
         ↓
-Firebase Auth + Firestore + Storage
+Supabase Auth + Postgres + Storage
 ```
 
 ## Vantagens desta versão

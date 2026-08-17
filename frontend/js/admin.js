@@ -1,5 +1,5 @@
 import {
-  isAdminFirebaseConfigured,
+  isAdminSupabaseConfigured,
   observeAuth,
   signIn,
   signOutAdmin,
@@ -66,8 +66,16 @@ function formatDate(value) {
   return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString('pt-BR');
 }
 
+function formatDateTimeLocal(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const pad = (part) => String(part).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 function overviewView() {
-  const newPrayers = state.prayers.filter((p) => (p.status || 'novo') === 'novo').length;
+  const newPrayers = state.prayers.filter((p) => (p.status || 'received') === 'received').length;
   return `
     <header class="admin-page-head"><div><h1>Visão geral</h1><p>Conteúdo e pedidos recebidos pelo PWA.</p></div><button class="btn small" data-admin-refresh>Atualizar</button></header>
     <div class="admin-stats">
@@ -75,7 +83,7 @@ function overviewView() {
       <article class="admin-stat"><strong>${state.events.length}</strong><span>Eventos</span></article>
       <article class="admin-stat"><strong>${newPrayers}</strong><span>Pedidos novos</span></article>
     </div>
-    <section class="section form-note"><strong>PWA conectado ao Firebase.</strong><br>Use o menu para cadastrar, editar ou excluir publicações e eventos. Pedidos de oração podem ser marcados como atendidos.</section>`;
+    <section class="section form-note"><strong>PWA conectado ao Supabase.</strong><br>Use o menu para cadastrar, editar ou excluir publicações e eventos. Pedidos de oração podem ser marcados como atendidos.</section>`;
 }
 
 function documentTable(type, items) {
@@ -89,7 +97,7 @@ function documentTable(type, items) {
             <tr>
               <td><img src="${e(item.image || 'assets/images/logo igreja.png')}" alt=""></td>
               <td><strong>${e(item.title || 'Sem título')}</strong><br><small>${e((item.subtitle || item.description || '').slice(0, 90))}</small></td>
-              <td>${isPost ? e(item.category || '—') : `${e(item.date || '—')}<br><small>${e(item.time || '')}</small>`}</td>
+              <td>${isPost ? e(item.category || '—') : e(formatDate(item.starts_at))}</td>
               <td>${item.published === false ? 'Não' : 'Sim'}</td>
               <td><div class="admin-row-actions"><button data-admin-edit="${e(type)}" data-id="${e(item.id)}">Editar</button><button class="danger" data-admin-delete="${e(type)}" data-id="${e(item.id)}">Excluir</button></div></td>
             </tr>`).join('') : '<tr><td colspan="5">Nenhum registro.</td></tr>'}
@@ -116,7 +124,7 @@ function editorView(type, item = {}) {
       <form id="contentEditor" class="admin-form" data-type="${type}" data-id="${e(item.id || '')}">
         <div class="field"><label>Título</label><input name="title" required maxlength="140" value="${e(item.title || '')}"></div>
         <div class="field"><label>${isPost ? 'Descrição' : 'Descrição do evento'}</label><textarea name="description" maxlength="1200">${e(subtitle)}</textarea></div>
-        ${isPost ? `<div class="field"><label>Categoria</label><input name="category" maxlength="60" value="${e(item.category || 'Cultos')}"></div><div class="field"><label>Data / chamada</label><input name="date" maxlength="80" value="${e(item.date || '')}"></div>` : `<div class="field"><label>Data</label><input name="date" maxlength="80" value="${e(item.date || '')}"></div><div class="field"><label>Horário</label><input name="time" maxlength="80" value="${e(item.time || '')}"></div><div class="field"><label>Local</label><input name="location" maxlength="120" value="${e(item.location || 'IEPP Curitiba')}"></div>`}
+        ${isPost ? `<div class="field"><label>Categoria</label><input name="category" maxlength="60" value="${e(item.category || 'Cultos')}"></div><div class="field"><label>Data / chamada</label><input name="date" maxlength="80" value="${e(item.date || '')}"></div>` : `<div class="field"><label>Data e horário</label><input name="starts_at" type="datetime-local" value="${e(formatDateTimeLocal(item.starts_at))}"></div><div class="field"><label>Local</label><input name="location" maxlength="120" value="${e(item.location || 'IEPP Curitiba')}"></div>`}
         <div class="field"><label>URL da imagem</label><input name="image" id="imageUrl" value="${e(item.image || '')}" placeholder="https://..."></div>
         <div class="field"><label>Ou enviar imagem</label><input class="admin-file" name="imageFile" type="file" accept="image/*"></div>
         <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" name="published" ${item.published === false ? '' : 'checked'}> Publicado</label>
@@ -127,20 +135,16 @@ function editorView(type, item = {}) {
 }
 
 function prayersView() {
-  const sorted = [...state.prayers].sort((a, b) => {
-    const aSec = a.createdAt?.seconds || 0;
-    const bSec = b.createdAt?.seconds || 0;
-    return bSec - aSec;
-  });
+  const sorted = [...state.prayers].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   return `
     <header class="admin-page-head"><div><h1>Pedidos de oração</h1><p>Conteúdo reservado à equipe autorizada.</p></div><button class="btn small" data-admin-refresh>Atualizar</button></header>
     <div class="prayer-list">${sorted.length ? sorted.map((p) => `
       <article class="prayer-card">
-        <div class="prayer-meta"><span>${e(formatDate(p.createdAt))}</span><span>${p.private === false ? 'Compartilhável' : 'Reservado'}</span></div>
+        <div class="prayer-meta"><span>${e(formatDate(p.created_at))}</span><span>${p.is_private === false ? 'Compartilhável' : 'Reservado'}</span></div>
         <h3>${e(p.name || 'Sem nome')}</h3>
         ${p.phone ? `<small>${e(p.phone)}</small>` : ''}
         <p>${e(p.request || '')}</p>
-        <div class="prayer-actions"><span class="status-pill ${p.status === 'atendido' ? 'online' : 'offline'}">${e(p.status || 'novo')}</span><button class="btn light small" data-prayer-status="${e(p.id)}" data-next-status="${p.status === 'atendido' ? 'novo' : 'atendido'}">${p.status === 'atendido' ? 'Marcar como novo' : 'Marcar atendido'}</button></div>
+        <div class="prayer-actions"><span class="status-pill ${p.status === 'answered' ? 'online' : 'offline'}">${p.status === 'answered' ? 'Atendido' : 'Novo'}</span><button class="btn light small" data-prayer-status="${e(p.id)}" data-next-status="${p.status === 'answered' ? 'received' : 'answered'}">${p.status === 'answered' ? 'Marcar como novo' : 'Marcar atendido'}</button></div>
       </article>`).join('') : '<div class="empty-state">Nenhum pedido recebido.</div>'}</div>`;
 }
 
@@ -183,8 +187,7 @@ async function handleEditorSubmit(form) {
     } : {
       ...common,
       description: form.elements.description.value.trim(),
-      date: form.elements.date.value.trim(),
-      time: form.elements.time.value.trim(),
+      starts_at: form.elements.starts_at.value ? new Date(form.elements.starts_at.value).toISOString() : null,
       location: form.elements.location.value.trim()
     };
     await saveDocument(type, payload, id);
@@ -219,7 +222,7 @@ function setupEditorPreview(form) {
 }
 
 async function init() {
-  if (!isAdminFirebaseConfigured()) {
+  if (!isAdminSupabaseConfigured()) {
     showOnly(setupView);
     return;
   }
@@ -234,14 +237,14 @@ async function init() {
       return;
     }
     try {
-      const allowed = await isAdminUser(user.uid);
+      const allowed = await isAdminUser(user.id);
       if (!allowed) {
         await signOutAdmin();
-        document.querySelector('#loginError').textContent = 'Este usuário não está autorizado na coleção admins.';
+        document.querySelector('#loginError').textContent = 'Este usuário não possui a função admin.';
         return;
       }
       state.user = user;
-      adminUser.textContent = user.email || user.uid;
+      adminUser.textContent = user.email || user.id;
       logoutButton.hidden = false;
       showOnly(dashboardView);
       await refreshAll();
