@@ -8,7 +8,8 @@ const configured = SUPABASE_URL.startsWith('https://')
 let client = null;
 if (configured) {
   try {
-    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const createClient = globalThis.supabase?.createClient;
+    if (!createClient) throw new Error('Cliente local do Supabase não foi carregado.');
     client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
     });

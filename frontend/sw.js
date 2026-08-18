@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iepp-pwa-v20.0.2';
+const CACHE_NAME = 'iepp-pwa-v20.0.3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -12,6 +12,7 @@ const APP_SHELL = [
   './js/admin-service.js',
   './js/supabase-config.js',
   './js/supabase-service.js',
+  './js/vendor/supabase.min.js',
   './data/content.json',
   './assets/images/logo igreja.png',
   './assets/images/app_icon_silver.png',
