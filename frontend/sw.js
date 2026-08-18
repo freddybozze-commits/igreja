@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iepp-pwa-v20.0.4';
+const CACHE_NAME = 'iepp-pwa-v20.0.5';
 const APP_SHELL = [
   './',
   './index.html',
@@ -49,7 +49,17 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (url.pathname.endsWith('/data/content.json') || url.pathname.endsWith('/js/supabase-config.js')) {
+  const networkFirst = [
+    '/admin.html',
+    '/js/admin.js',
+    '/js/admin-service.js',
+    '/js/supabase-config.js',
+    '/js/supabase-service.js',
+    '/js/vendor/supabase.min.js',
+    '/data/content.json'
+  ].some((path) => url.pathname.endsWith(path));
+
+  if (networkFirst) {
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -57,7 +67,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           return response;
         })
-        .catch(() => caches.match(request))
+        .catch(() => caches.match(request, { ignoreSearch: true }))
     );
     return;
   }

@@ -1,21 +1,26 @@
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase-config.js';
 
+const FALLBACK_URL = 'https://vgmhsnnbicsptklckntl.supabase.co';
+const FALLBACK_ANON_KEY = 'sb_publishable_oTeJyIpWFU3ZVPomwrjEFw_9LSMObNf';
 const configured = SUPABASE_URL.startsWith('https://')
   && !SUPABASE_URL.includes('COLE_AQUI')
   && SUPABASE_ANON_KEY.length > 40
   && !SUPABASE_ANON_KEY.includes('COLE_AQUI');
+const supabaseUrl = configured ? SUPABASE_URL : FALLBACK_URL;
+const supabaseAnonKey = configured ? SUPABASE_ANON_KEY : FALLBACK_ANON_KEY;
 
 let client = null;
-if (configured) {
-  try {
-    const createClient = globalThis.supabase?.createClient;
-    if (!createClient) throw new Error('Cliente local do Supabase não foi carregado.');
-    client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-    });
-  } catch (error) {
-    console.warn('Supabase indisponível; iniciando no modo offline.', error);
+try {
+  let createClient = globalThis.supabase?.createClient;
+  if (!createClient) {
+    ({ createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'));
   }
+  if (typeof createClient !== 'function') throw new Error('Cliente do Supabase não foi carregado.');
+  client = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+} catch (error) {
+  console.error('Falha ao inicializar o Supabase.', error);
 }
 export const supabase = client;
 
