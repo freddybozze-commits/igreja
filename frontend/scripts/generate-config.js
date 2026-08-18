@@ -22,9 +22,16 @@ function loadEnvFile(path, allowedKeys = null) {
 loadEnvFile(envPath);
 loadEnvFile(backendEnvPath, new Set(['SUPABASE_URL', 'SUPABASE_ANON_KEY']));
 
-const url = process.env.PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || 'COLE_AQUI_A_URL_DO_PROJETO';
-const anonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || 'COLE_AQUI_A_CHAVE_ANON_PUBLIC';
+const url = process.env.PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+const anonKey = process.env.PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+const configPath = resolve(root, 'js', 'supabase-config.js');
 
-writeFileSync(resolve(root, 'js', 'supabase-config.js'), `// Gerado automaticamente no build. Não edite manualmente.\nexport const SUPABASE_URL = ${JSON.stringify(url)};\nexport const SUPABASE_ANON_KEY = ${JSON.stringify(anonKey)};\n`);
-
-console.log(url.startsWith('https://') ? 'Configuração gerada.' : 'Build concluído.');
+if (url && anonKey) {
+  writeFileSync(configPath, `// Gerado automaticamente no build. Não edite manualmente.\nexport const SUPABASE_URL = ${JSON.stringify(url)};\nexport const SUPABASE_ANON_KEY = ${JSON.stringify(anonKey)};\n`);
+  console.log('Configuração gerada pelas variáveis de ambiente.');
+} else if (existsSync(configPath) && !readFileSync(configPath, 'utf8').includes('COLE_AQUI')) {
+  console.log('Variáveis de ambiente ausentes; configuração pública existente preservada.');
+} else {
+  writeFileSync(configPath, `// Gerado automaticamente no build. Não edite manualmente.\nexport const SUPABASE_URL = "COLE_AQUI_A_URL_DO_PROJETO";\nexport const SUPABASE_ANON_KEY = "COLE_AQUI_A_CHAVE_ANON_PUBLIC";\n`);
+  console.warn('Build concluído sem configuração do Supabase.');
+}
